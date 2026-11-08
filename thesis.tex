@@ -1,0 +1,32 @@
+\begin{document}
+\frontmatter
+\MakeLawTitle
+\input{frontmatter/colophon}
+\input{frontmatter/abstract}
+\ifLawAnonymous\else\input{frontmatter/declarations}\fi
+\tableofcontents
+\input{frontmatter/abbreviations}
+\PrintLawTables
+\mainmatter
+\ifLawReview\linenumbers\fi
+\input{chapters/01-introduction}
+\input{chapters/02-methods}
+\input{chapters/03-doctrinal-analysis}
+\ifLawArticles
+  \input{chapters/04-article-integration}
+\else
+  \input{chapters/04-comparative-analysis}
+\fi
+\input{chapters/05-synthesis}
+\input{chapters/06-conclusion}
+\ifLawReview\nolinenumbers\fi
+\appendix
+\input{backmatter/research-record}
+\input{backmatter/summary-nl}
+\backmatter
+\PrintLawBibliography
+\ifLawAnonymous\else
+  \input{backmatter/acknowledgements}
+  \input{backmatter/cv}
+\fi
+\end{document}

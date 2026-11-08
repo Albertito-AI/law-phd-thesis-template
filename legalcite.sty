@@ -1,0 +1,141 @@
+% SPDX-License-Identifier: MIT
+% Author-curated legal citations. This is not a complete style-manual renderer.
+\NeedsTeXFormat{LaTeX2e}[2021-06-01]
+\ProvidesPackage{legalcite}[2026/11/08 v1.0.0 Author-curated legal footnotes]
+\RequirePackage{expl3}
+\RequirePackage{xparse}
+\RequirePackage[noautomatic]{imakeidx}
+\makeindex[name=\jobname-cases,title=Table of cases,intoc,columns=1]
+\makeindex[name=\jobname-legislation,title=Table of legislation,intoc,columns=1]
+\makeindex[name=\jobname-treaties,title=Table of treaties and international instruments,intoc,columns=1]
+\newcounter{lawcitationcontext}
+\newcommand{\LawNewCitationContext}{\stepcounter{lawcitationcontext}}
+\AddToHook{cmd/chapter/before}{\LawNewCitationContext}
+\ExplSyntaxOn
+\seq_new:N \g__law_sources_seq
+\seq_new:N \g__law_cited_secondary_seq
+\prop_new:N \g__law_seen_prop
+\tl_new:N \l__law_kind_tl
+\tl_new:N \l__law_label_tl
+\tl_new:N \l__law_index_tl
+\tl_new:N \l__law_jurisdiction_tl
+\tl_new:N \l__law_sort_tl
+\tl_new:N \l__law_table_tl
+\bool_new:N \l__law_full_bool
+\cs_generate_variant:Nn \tl_replace_all:Nnn {Nxn}
+\cs_new_protected:Npn \__law_index_escape:N #1
+  {
+    \tl_replace_all:Nnn #1 {"} {""}
+    \tl_replace_all:Nnn #1 {!} {"!}
+    \tl_replace_all:Nxn #1 {\char_generate:nn {64}{12}} {"@}
+    \tl_replace_all:Nnn #1 {|} {"|}
+  }
+\msg_new:nnn {legalcite}{duplicate}{Duplicate~authority~key~'#1'.~Use~unique~keys.}
+\msg_new:nnn {legalcite}{unknown}{Unknown~authority~key~'#1'.~Declare~it~in~references/authorities.tex.}
+\msg_new:nnn {legalcite}{kind}{Unknown~authority~kind~'#1'.}
+\NewDocumentCommand \DeclareLawSource { m m m m m m m m }
+  {
+    \prop_if_exist:cTF {g__law_source_#1_prop}
+      {\msg_error:nnn {legalcite}{duplicate}{#1}}
+      {
+        \clist_if_in:nnF {case,legislation,treaty,secondary}{#2}
+          {\msg_error:nnn {legalcite}{kind}{#2}}
+        \prop_new:c {g__law_source_#1_prop}
+        \prop_gput:cnn {g__law_source_#1_prop}{kind}{#2}
+        \prop_gput:cnn {g__law_source_#1_prop}{jurisdiction}{#3}
+        \prop_gput:cnn {g__law_source_#1_prop}{sort}{#4}
+        \prop_gput:cnn {g__law_source_#1_prop}{full}{#5}
+        \prop_gput:cnn {g__law_source_#1_prop}{short}{#6}
+        \prop_gput:cnn {g__law_source_#1_prop}{table}{#7}
+        \prop_gput:cnn {g__law_source_#1_prop}{bibliography}{#8}
+        \seq_gput_right:Nn \g__law_sources_seq {#1}
+      }
+  }
+\cs_new_protected:Npn \__law_index:n #1
+  {
+    \tl_set:Nx \l__law_kind_tl {\prop_item:cn {g__law_source_#1_prop}{kind}}
+    \str_if_eq:VnTF \l__law_kind_tl {secondary}
+      {
+        \seq_if_in:NnF \g__law_cited_secondary_seq {#1}
+          {\seq_gput_right:Nn \g__law_cited_secondary_seq {#1}}
+      }
+      {
+        \str_case:Vn \l__law_kind_tl
+          {
+            {case}{\tl_set:Nn \l__law_index_tl {cases}}
+            {legislation}{\tl_set:Nn \l__law_index_tl {legislation}}
+            {treaty}{\tl_set:Nn \l__law_index_tl {treaties}}
+          }
+        \prop_get:cnN {g__law_source_#1_prop}{jurisdiction} \l__law_jurisdiction_tl
+        \prop_get:cnN {g__law_source_#1_prop}{sort} \l__law_sort_tl
+        \prop_get:cnN {g__law_source_#1_prop}{table} \l__law_table_tl
+        \__law_index_escape:N \l__law_jurisdiction_tl
+        \__law_index_escape:N \l__law_sort_tl
+        \__law_index_escape:N \l__law_table_tl
+        \use:x
+          {
+            \exp_not:N \index [\jobname-\l__law_index_tl]
+              {\exp_not:V \l__law_jurisdiction_tl !\exp_not:V \l__law_sort_tl @\exp_not:V \l__law_table_tl |hyperpage}
+          }
+      }
+  }
+\cs_new_protected:Npn \__law_reference:nnn #1#2#3
+  {
+    \prop_if_exist:cTF {g__law_source_#2_prop}
+      {
+        \__law_index:n {#2}
+        \bool_set_false:N \l__law_full_bool
+        \tl_set:Nx \l__law_label_tl {law:\arabic{lawcitationcontext}:#2}
+        \prop_if_in:NVTF \g__law_seen_prop \l__law_label_tl
+          {
+            \str_if_eq:nnTF {#3}{full}
+              {\bool_set_true:N \l__law_full_bool\prop_item:cn {g__law_source_#2_prop}{full}}
+              {
+                \prop_item:cn {g__law_source_#2_prop}{short}
+                \nobreakspace(n~\exp_args:NV \ref \l__law_label_tl)
+              }
+          }
+          {
+            \bool_set_true:N \l__law_full_bool
+            \prop_gput:NVn \g__law_seen_prop \l__law_label_tl {seen}
+            \exp_args:NV \label \l__law_label_tl
+            \prop_item:cn {g__law_source_#2_prop}{full}
+          }
+        \tl_if_blank:nF {#1}{\bool_if:NTF \l__law_full_bool {,~}{~}#1}
+      }
+      {\msg_error:nnn {legalcite}{unknown}{#2}}
+  }
+\NewDocumentCommand \lawref { O{} m }
+  {\__law_reference:nnn {#1}{#2}{normal}}
+\NewDocumentCommand \lawcite { O{} m }
+  {\footnote{\__law_reference:nnn {#1}{#2}{normal}.}}
+\NewDocumentCommand \lawfullcite { O{} m }
+  {\footnote{\__law_reference:nnn {#1}{#2}{full}.}}
+\NewDocumentCommand \PrintLawTables {}
+  {
+    \begingroup\singlespacing
+    \printindex[\jobname-cases]
+    \printindex[\jobname-legislation]
+    \printindex[\jobname-treaties]
+    \endgroup
+  }
+\NewDocumentCommand \PrintLawBibliography {}
+  {
+    \addchap{Bibliography}
+    \begingroup\singlespacing
+    \seq_sort:Nn \g__law_cited_secondary_seq
+      {
+        \str_compare:eNeTF
+          {\prop_item:cn {g__law_source_##1_prop}{sort}} >
+          {\prop_item:cn {g__law_source_##2_prop}{sort}}
+          {\sort_return_swapped:}{\sort_return_same:}
+      }
+    \seq_map_inline:Nn \g__law_cited_secondary_seq
+      {
+        \par\noindent\hangindent=1.5em\hangafter=1
+        \prop_item:cn {g__law_source_##1_prop}{bibliography}\par\medskip
+      }
+    \endgroup
+  }
+\ExplSyntaxOff
+\endinput

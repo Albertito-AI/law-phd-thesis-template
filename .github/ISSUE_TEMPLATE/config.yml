@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Security reporting and confidentiality
+    url: https://github.com/Albertito-AI/law-phd-thesis-template/blob/main/SECURITY.md
+    about: Read the private reporting guidance before sharing a security issue.

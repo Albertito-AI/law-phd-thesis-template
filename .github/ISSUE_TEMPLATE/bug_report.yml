@@ -1,0 +1,27 @@
+name: Report a reproducible problem
+description: Help improve the template without disclosing private research.
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: "Please remove unpublished research, personal data and credentials. For security issues, see SECURITY.md."
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: "Overleaf and its TeX Live version, or your operating system and TeX distribution."
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Minimal steps and error
+      description: "Include the entrypoint, template version, build command and a short relevant error excerpt."
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+    validations:
+      required: true

@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If this toolkit is useful to your research, you may cite the software. Citation is optional."
+type: software
+title: "LexThesis: An Open Toolkit for Doctoral Legal Research"
+version: 1.0.0
+date-released: '2026-11-08'
+authors:
+  - family-names: Tan
+    given-names: Albert Sin Hon
+repository-code: "https://github.com/Albertito-AI/law-phd-thesis-template"
+license: MIT
+keywords:
+  - law
+  - thesis
+  - doctoral-research
+  - latex
+  - legal-citation
+  - groningen

@@ -1,0 +1,65 @@
+name: Build and audit
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: thesis-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Test the tooling
+        run: python3 -m unittest discover -s tests -v
+      - name: Audit template sources
+        run: python3 scripts/check.py
+      - name: Check source export
+        run: python3 scripts/package.py
+
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        entrypoint: [main, print, review, anonymous, groningen, articles, propositions]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install distribution TeX packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y latexmk texlive-luatex texlive-latex-extra texlive-fonts-recommended texlive-lang-european poppler-utils
+      - name: Build the example
+        env:
+          THESIS_ENTRYPOINT: ${{ matrix.entrypoint }}
+        run: python3 scripts/build.py "$THESIS_ENTRYPOINT"
+      - name: Inspect the final log
+        env:
+          THESIS_ENTRYPOINT: ${{ matrix.entrypoint }}
+        run: python3 scripts/check.py --log "build/$THESIS_ENTRYPOINT/$THESIS_ENTRYPOINT.log"
+      - name: Check rendered legal citation behaviour
+        if: matrix.entrypoint == 'main'
+        run: python3 tests/run_latex_integration.py
+      - name: Retain the public demonstration PDF
+        if: github.event_name != 'pull_request' && github.repository == 'Albertito-AI/law-phd-thesis-template'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: example-${{ matrix.entrypoint }}
+          path: build/${{ matrix.entrypoint }}/${{ matrix.entrypoint }}.pdf
+          if-no-files-found: error
+          retention-days: 14
+          include-hidden-files: false

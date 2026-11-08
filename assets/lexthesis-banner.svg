@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="310" viewBox="0 0 1200 310" role="img" aria-labelledby="title desc">
+<title id="title">LexThesis</title><desc id="desc">An open toolkit for doctoral legal research. Write with structure. Cite with care.</desc>
+<rect width="1200" height="310" fill="#18314A"/>
+<path d="M865 48v215M900 63v200M935 78v185M970 93v170M1005 108v155M1040 123v140M1075 138v125" stroke="#49627A" stroke-width="1"/>
+<path d="M855 263h235" stroke="#B77E63" stroke-width="3"/>
+<text x="64" y="73" font-family="Arial, sans-serif" font-size="14" letter-spacing="3" fill="#D9AF98">DOCTORAL LEGAL RESEARCH</text>
+<text x="60" y="162" font-family="Georgia, serif" font-size="76" fill="#FFFFFF">LexThesis</text>
+<path d="M64 193h72" stroke="#B77E63" stroke-width="3"/>
+<text x="64" y="235" font-family="Arial, sans-serif" font-size="21" fill="#E3E9ED">Write with structure. Cite with care.</text>
+<text x="64" y="271" font-family="Arial, sans-serif" font-size="14" fill="#B3C1CB">OPEN SOURCE  /  BUILT FOR LAW PHD STUDENTS</text>
+</svg>

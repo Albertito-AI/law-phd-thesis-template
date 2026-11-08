@@ -1,0 +1,22 @@
+name: Suggest an improvement
+description: Propose a concrete change, with primary guidance for new institutional rules.
+title: "[Proposal]: "
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: What problem would this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Supporting guidance or example
+      description: "For a university or citation rule, provide the official URL, edition/date and exact relevant section."
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Proposed behaviour
+      description: "Explain how a student would use the feature."
+    validations:
+      required: true

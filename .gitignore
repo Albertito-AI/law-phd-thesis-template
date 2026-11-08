@@ -1,0 +1,45 @@
+# Build outputs. The deliberately published example PDF is stored separately.
+/build/
+/dist/
+*.aux
+*.log
+*.toc
+*.lof
+*.lot
+*.out
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.idx
+*.ind
+*.ilg
+*.bbl
+*.bcf
+*.blg
+*.run.xml
+*.xdv
+*.dvi
+/*.pdf
+
+# Private material and credentials do not belong in a public template.
+/private/
+/confidential/
+/secrets/
+/data/
+/raw-data/
+/notes/
+.env
+.env.*
+*.pem
+*.key
+
+# Local caches and editor state.
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*~
