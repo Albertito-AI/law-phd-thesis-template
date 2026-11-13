@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Clarify generated PDF and diagnostic-log locations for local builds, and provide an explicit Python command for checking missing packages.
+
 ## 1.0.0: 8 November 2026
 
 Initial independently authored release.
