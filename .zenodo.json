@@ -1,0 +1,20 @@
+{
+  "title": "LexThesis: An Open Toolkit for Doctoral Legal Research",
+  "description": "LexThesis: an open toolkit for law PhD students. Legal footnotes, tables of authorities, research integrity records, Groningen guidance, Overleaf support and tested thesis layouts. This deposit preserves a dated source snapshot of the implementation and documentation, with the limitations stated in the repository.",
+  "creators": [
+    {
+      "name": "Tan, Sin Hon Albert",
+      "orcid": "0009-0001-8996-7933"
+    }
+  ],
+  "upload_type": "software",
+  "access_right": "open",
+  "license": "MIT",
+  "notes": "MIT applies to original toolkit code. This independently authored toolkit is not an official university template or endorsement. Archival publication does not establish peer review, independent validation or production readiness.",
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/Albertito-AI/law-phd-thesis-template",
+      "relation": "isSupplementTo"
+    }
+  ]
+}
