@@ -45,6 +45,10 @@ python3 scripts/check.py --log build/main/main.log
 
 Each variant has its own directory, such as `build/review/`. The build helper runs LaTeX and MakeIndex as needed. It refuses arbitrary entrypoint names and uses subprocess argument lists.
 
+Open `build/main/main.pdf` for the reading copy or `build/review/review.pdf` for the review copy. Other variants follow the same pattern: `build/<entrypoint>/<entrypoint>.pdf`.
+
+If a LaTeX build command fails, inspect `build/<entrypoint>/build-console.log` for the command and its output. If LaTeX produced a log, it is in the same directory as `<entrypoint>.log`; for example, `build/review/review.log`. Missing-dependency errors can occur before these logs are created; follow the terminal message and run `python3 scripts/doctor.py`.
+
 On a conventional TeX installation, the direct Overleaf-style build is:
 
 ```bash
@@ -58,7 +62,7 @@ The Python helper provides isolated output directories and an additional final-l
 | Symptom | Check |
 | --- | --- |
 | `lualatex`, `latexmk` or `makeindex` missing | Install or repair the TeX distribution and restart the terminal. |
-| A package or font is missing | Run `scripts/doctor.py`; install the package through your distribution's manager. |
+| A package or font is missing | Run `python3 scripts/doctor.py`; install the package through your distribution's manager. |
 | `Unknown authority key` | Match the key in the citation to a declaration in `references/authorities.tex`. |
 | A `?` appears in a reference | Run the full build; then inspect missing labels and the final log. |
 | An authority table is empty | Confirm the authority is actually cited and MakeIndex has run. Declared but uncited sources are omitted. |
