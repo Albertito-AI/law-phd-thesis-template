@@ -7,6 +7,7 @@ date-released: '2026-11-08'
 authors:
   - family-names: Tan
     given-names: Albert Sin Hon
+    orcid: "https://orcid.org/0009-0001-8996-7933"
 repository-code: "https://github.com/Albertito-AI/law-phd-thesis-template"
 license: MIT
 keywords:
